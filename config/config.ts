@@ -17,7 +17,9 @@ export default defineConfig({
     siderWidth: 208,
     ...defaultSettings,
   },
-  dynamicImport: false,
+  dynamicImport: {
+    loading: '@ant-design/pro-layout/es/PageLoading',
+  },
   targets: {
     ie: 11,
   },
@@ -57,4 +59,5 @@ export default defineConfig({
   },
   mfsu: {},
   webpack5: {},
+  exportStatic: {},
 });
