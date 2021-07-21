@@ -5,11 +5,11 @@ import type { RequestConfig, RunTimeLayoutConfig } from 'umi';
 import { history, Link } from 'umi';
 import RightContent from '@/components/RightContent';
 import Footer from '@/components/Footer';
-import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
 import { BookOutlined, LinkOutlined } from '@ant-design/icons';
+import { info } from '@/services/auth/admin';
 
 const isDev = process.env.NODE_ENV === 'development';
-const loginPath = '/user/login';
+const loginPath = '/login';
 
 /** 获取用户信息比较慢的时候会展示一个 loading */
 export const initialStateConfig = {
@@ -26,7 +26,7 @@ export async function getInitialState(): Promise<{
 }> {
   const fetchUserInfo = async () => {
     try {
-      const msg = await queryCurrentUser();
+      const msg = await info();
       return msg.data;
     } catch (error) {
       history.push(loginPath);
@@ -47,6 +47,40 @@ export async function getInitialState(): Promise<{
     settings: {},
   };
 }
+
+const API_TOKEN_HEADER = 'api-token';
+const SET_API_TOKEN_HEADER = 'set-api-token';
+const API_TOKEN_LOCAL = 'api-token';
+
+const getToken = () => localStorage.getItem(API_TOKEN_LOCAL);
+const setToken = (token: string) => localStorage.setItem(API_TOKEN_LOCAL, token);
+
+const authHeaderRequestInterceptor = (url: string, options: any) => {
+  const authHeader = {};
+  authHeader[API_TOKEN_HEADER] = getToken();
+  return {
+    url: `${url}`,
+    options: { ...options, interceptors: true, headers: authHeader },
+  };
+};
+
+const authHeaderResponseInterceptor = (response: Response) => {
+  if (response.headers.has(SET_API_TOKEN_HEADER)) {
+    setToken(response.headers.get(SET_API_TOKEN_HEADER)!);
+  }
+  return response;
+};
+
+const codeHandlerInterceptor = async (response: Response) => {
+  const data = await response.clone().json();
+  if (data.code === 500) {
+    notification.error({
+      description: data.message,
+      message: '服务器内部错误',
+    });
+  }
+  return response;
+};
 
 /**
  * 异常处理程序
@@ -87,6 +121,9 @@ export async function getInitialState(): Promise<{
  * @see https://beta-pro.ant.design/docs/request-cn
  */
 export const request: RequestConfig = {
+  method: 'post',
+  requestType: 'json',
+  prefix: isDev ? 'http://localhost:8080/admin' : '/admin',
   errorHandler: (error: any) => {
     const { response } = error;
 
@@ -98,6 +135,8 @@ export const request: RequestConfig = {
     }
     throw error;
   },
+  requestInterceptors: [authHeaderRequestInterceptor],
+  responseInterceptors: [authHeaderResponseInterceptor, codeHandlerInterceptor],
 };
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
