@@ -123,7 +123,7 @@ const codeHandlerInterceptor = async (response: Response) => {
 export const request: RequestConfig = {
   method: 'post',
   requestType: 'json',
-  prefix: isDev ? 'http://localhost:8080/admin' : 'https:leader-api.raywork.site/admin',
+  prefix: isDev ? 'http://localhost:8080/admin' : 'https://leader-api.raywork.site/admin',
   errorHandler: (error: any) => {
     const { response } = error;
 
