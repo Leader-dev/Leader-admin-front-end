@@ -4,8 +4,11 @@ import { join } from 'path';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
 import routes from './routes';
-const { REACT_APP_ENV } = process.env;
+const { REACT_APP_ENV, API_ENDPOINT } = process.env;
 export default defineConfig({
+  define: {
+    API_ENDPOINT: API_ENDPOINT || '',
+  },
   hash: true,
   antd: {},
   dva: {
