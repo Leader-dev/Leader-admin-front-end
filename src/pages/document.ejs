@@ -204,23 +204,21 @@
     <script type="text/javascript">
       // this is to implement signboard girl function
       if (localStorage.getItem('signboard') === "true") {
-        setTimeout(() => {
-          L2Dwidget
-                  .init({
-                    model: {
-                      jsonPath: "https://cdn.jsdelivr.net/npm/live2d-widget-model-shizuku@1.0.5/assets/shizuku.model.json",
-                      scale: 0.6,
-                    },
-                    display: {
-                      position: "left",
-                      vOffset: "-70",
-                      hOffset: "20"
-                    },
-                    mobile: {
-                      scale: 0.53,
-                    }
-                  });
-        }, 1000)
+        L2Dwidget
+                .init({
+                  model: {
+                    jsonPath: "https://cdn.jsdelivr.net/npm/live2d-widget-model-shizuku@1.0.5/assets/shizuku.model.json",
+                    scale: 0.6,
+                  },
+                  display: {
+                    position: "left",
+                    vOffset: "-70",
+                    hOffset: "20"
+                  },
+                  mobile: {
+                    scale: 0.53,
+                  }
+                });
       }
     </script>
   </body>
