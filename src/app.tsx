@@ -7,6 +7,7 @@ import RightContent from '@/components/RightContent';
 import Footer from '@/components/Footer';
 import { BookOutlined, LinkOutlined } from '@ant-design/icons';
 import { info } from '@/services/auth/admin';
+import { getAccessStartUrl } from '@/services/service';
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/login';
@@ -23,6 +24,7 @@ export async function getInitialState(): Promise<{
   settings?: Partial<LayoutSettings>;
   currentUser?: API.CurrentUser;
   fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
+  accessStartUrl?: string;
 }> {
   const fetchUserInfo = async () => {
     try {
@@ -33,6 +35,7 @@ export async function getInitialState(): Promise<{
     }
     return undefined;
   };
+  const accessStartUrl = await getAccessStartUrl();
   // 如果是登录页面，不执行
   if (history.location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
@@ -40,11 +43,13 @@ export async function getInitialState(): Promise<{
       fetchUserInfo,
       currentUser,
       settings: {},
+      accessStartUrl,
     };
   }
   return {
     fetchUserInfo,
     settings: {},
+    accessStartUrl,
   };
 }
 
@@ -123,7 +128,7 @@ const codeHandlerInterceptor = async (response: Response) => {
 export const request: RequestConfig = {
   method: 'post',
   requestType: 'json',
-  prefix: isDev ? 'http://localhost:8080/admin' : `${API_ENDPOINT}/admin`,
+  prefix: isDev ? 'http://localhost:8080' : API_ENDPOINT,
   errorHandler: (error: any) => {
     const { response } = error;
 

@@ -2,7 +2,7 @@ import { request } from 'umi';
 import { JSEncrypt } from 'jsencrypt';
 
 async function getKey() {
-  return await request('/key');
+  return await request('/admin/key');
 }
 
 async function encryptPassword(password: string) {
@@ -13,7 +13,7 @@ async function encryptPassword(password: string) {
 }
 
 export async function login(username: string, password: string) {
-  return await request('/login', {
+  return await request('/admin/login', {
     data: {
       username,
       password: await encryptPassword(password),
@@ -22,7 +22,7 @@ export async function login(username: string, password: string) {
 }
 
 export async function changePassword(password: string) {
-  return await request('/change-password', {
+  return await request('/admin/change-password', {
     data: {
       password: await encryptPassword(password),
     },
@@ -30,9 +30,9 @@ export async function changePassword(password: string) {
 }
 
 export async function info() {
-  return await request('/info');
+  return await request('/admin/info');
 }
 
 export async function logout() {
-  return await request('/logout');
+  return await request('/admin/logout');
 }

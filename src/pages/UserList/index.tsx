@@ -1,11 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { getUserList } from '@/services/user';
+import { Popover } from 'antd';
+import { CheckOutlined } from '@ant-design/icons';
+
+type User = {
+  id: string;
+  uid: string;
+  nickname: string;
+  avatarUrl: string;
+  phone: string;
+  registrationDate: string;
+};
+
+const CopyButton = ({ text }: { text: string }) => {
+  const [copied, setCopied] = useState(false);
+  const copyPhone = async () => {
+    await navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 3000);
+  };
+
+  if (copied) {
+    return <CheckOutlined style={{ color: '#52c41a' }} />;
+  }
+  return <a onClick={copyPhone}>拷贝</a>;
+};
 
 const TableList: React.FC = () => {
-  const columns: ProColumns<API.RuleListItem>[] = [
+  // @ts-ignore
+  const columns: ProColumns<User>[] = [
     {
       title: 'ID',
       dataIndex: 'id',
@@ -29,9 +55,14 @@ const TableList: React.FC = () => {
       title: '手机号',
       dataIndex: 'phone',
       copyable: true,
-      renderText: (text) => {
-        return `${text.substr(0, 3)}****${text.substr(7, 4)}`;
-      },
+      valueType: 'option',
+      render: (_, row) => [
+        `${row.phone.substr(0, 3)}****${row.phone.substr(7, 4)}`,
+        <Popover content={row.phone}>
+          <a>显示</a>
+        </Popover>,
+        <CopyButton text={row.phone} />,
+      ],
     },
     {
       title: '注册时间',
