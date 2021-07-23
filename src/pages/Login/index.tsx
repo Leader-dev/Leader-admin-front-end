@@ -74,7 +74,9 @@ const Login: React.FC = () => {
           <div className={styles.header}>
             <Link to="/">
               <img alt="logo" className={styles.logo} src="/logo.png" />
-              <span className={styles.title}>麟者管理后台</span>
+              <span className={styles.title}>
+                麟者管理后台{ENV_NAME === '' ? '' : `（${ENV_NAME}）`}
+              </span>
             </Link>
           </div>
           <div className={styles.desc}>

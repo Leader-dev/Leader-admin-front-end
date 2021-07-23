@@ -1,5 +1,7 @@
 import { Settings as LayoutSettings } from '@ant-design/pro-layout';
 
+const { ENV_NAME } = process.env;
+
 const Settings: LayoutSettings & {
   pwa?: boolean;
   logo?: string;
@@ -12,7 +14,7 @@ const Settings: LayoutSettings & {
   fixedHeader: false,
   fixSiderbar: true,
   colorWeak: false,
-  title: '麟者管理后台',
+  title: '麟者管理后台' + (!ENV_NAME || ENV_NAME === '' ? '' : `（${ENV_NAME}）`),
   pwa: true,
   logo: '/logo_640.png',
   iconfontUrl: '',

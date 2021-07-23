@@ -4,10 +4,11 @@ import { join } from 'path';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
 import routes from './routes';
-const { REACT_APP_ENV, API_ENDPOINT } = process.env;
+const { REACT_APP_ENV, API_ENDPOINT, ENV_NAME } = process.env;
 export default defineConfig({
   define: {
     API_ENDPOINT: API_ENDPOINT || '',
+    ENV_NAME: ENV_NAME || '',
   },
   hash: true,
   antd: {},
