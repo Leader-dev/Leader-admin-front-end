@@ -134,7 +134,7 @@ export const request: RequestConfig = {
 
     if (!response) {
       notification.error({
-        description: '您的网络发生异常，无法连接服务器',
+        description: `您的网络发生异常，无法连接服务器：${error}`,
         message: '网络异常',
       });
     }
