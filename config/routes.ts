@@ -25,6 +25,12 @@ export default [
   { name: '社团组织列表', icon: 'home', path: '/org-list', component: './OrgList' },
   { name: '社团类型列表', icon: 'bars', path: '/org-type-list', component: './OrgTypeList' },
   { name: '社团举报', icon: 'warning', path: '/org-report-list', component: './OrgReportList' },
+  {
+    name: '官方通知',
+    icon: 'notification',
+    path: '/official-notification',
+    component: './OfficialNotificationList',
+  },
   { path: '/', redirect: '/welcome' },
   { component: './404' },
 ];

@@ -142,7 +142,6 @@ const TableList: React.FC = () => {
       valueType: 'option',
       render: (_, row) => [
         <a
-          key="editable"
           onClick={() => {
             setReportId(row.id);
           }}
