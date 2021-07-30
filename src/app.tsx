@@ -61,11 +61,11 @@ const getToken = () => localStorage.getItem(API_TOKEN_LOCAL);
 const setToken = (token: string) => localStorage.setItem(API_TOKEN_LOCAL, token);
 
 const authHeaderRequestInterceptor = (url: string, options: any) => {
-  const authHeader = {};
+  const authHeader = options.headers ?? {};
   authHeader[API_TOKEN_HEADER] = getToken();
   return {
     url: `${url}`,
-    options: { ...options, interceptors: true, headers: authHeader },
+    options: { ...options, interceptors: true, headers: { ...options.headers, ...authHeader } },
   };
 };
 
@@ -77,6 +77,9 @@ const authHeaderResponseInterceptor = (response: Response) => {
 };
 
 const codeHandlerInterceptor = async (response: Response) => {
+  if (!response.bodyUsed) {
+    return response;
+  }
   const data = await response.clone().json();
   if (data.code === 500) {
     notification.error({
@@ -129,6 +132,7 @@ export const request: RequestConfig = {
   method: 'post',
   requestType: 'json',
   prefix: isDev ? 'http://localhost:8080' : API_ENDPOINT,
+  credentials: 'omit',
   errorHandler: (error: any) => {
     const { response } = error;
 

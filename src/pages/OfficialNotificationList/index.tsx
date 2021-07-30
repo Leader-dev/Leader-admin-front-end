@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
-import type { ProColumns, ActionType } from '@ant-design/pro-table';
+import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { Button, Form, message, Popconfirm, Tag } from 'antd';
 import {
@@ -11,9 +11,17 @@ import {
   sendOfficialNotification,
   updateOfficialNotification,
 } from '@/services/user';
-import { ModalForm, ProFormCheckbox, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
+import {
+  ModalForm,
+  ProFormCheckbox,
+  ProFormDependency,
+  ProFormText,
+  ProFormTextArea,
+  ProFormUploadDragger,
+} from '@ant-design/pro-form';
 import { PlusOutlined } from '@ant-design/icons';
 import type { UploadFile } from 'antd/lib/upload/interface';
+import OSSImage from '@/components/OSSImage';
 
 type NotificationDetailProps = {
   toAll?: boolean;
@@ -39,6 +47,7 @@ const NotificationDetail = ({
       title?: string;
       content?: string;
       cover?: UploadFile;
+      coverUrl?: string;
     }>
       initialValues={{
         toAll: toAll ?? false,
@@ -49,12 +58,15 @@ const NotificationDetail = ({
         onCancel: () => onClose(false),
       }}
       onFinish={async (values) => {
+        let response;
         if (notificationId) {
-          await updateOfficialNotification({ ...values, notificationId });
+          response = await updateOfficialNotification({ ...values, notificationId });
         } else {
-          await sendOfficialNotification(values);
+          response = await sendOfficialNotification(values);
         }
-        onClose(true);
+        if (response.code === 200) {
+          onClose(true);
+        }
       }}
       params={{ notificationId, r: Math.random() }}
       request={async ({ notificationId: notifId }) => {
@@ -138,6 +150,20 @@ const NotificationDetail = ({
             message: '请输入内容',
           },
         ]}
+      />
+      <ProFormDependency name={['cover', 'coverUrl']}>
+        {({ cover, coverUrl }) => {
+          if (cover || !coverUrl) {
+            return null;
+          }
+          return <OSSImage url={coverUrl} width={500} />;
+        }}
+      </ProFormDependency>
+      <ProFormUploadDragger
+        max={1}
+        width="xl"
+        label={notificationId ? '替换封面图片' : '封面图片'}
+        name="cover"
       />
     </ModalForm>
   );

@@ -1,4 +1,5 @@
 import { request } from 'umi';
+import { uploadFile } from '@/services/service';
 
 export async function getUserList() {
   return (await request<{ list: any[] }>('/admin/user/list')).list;
@@ -21,14 +22,24 @@ export async function getUserInfo(uid: string) {
 }
 
 export async function sendOfficialNotification(params: any) {
+  const url = params.cover ? await uploadFile(params.cover[0]) : undefined;
   return await request('/admin/user/official-notification/send', {
-    data: params,
+    data: {
+      ...params,
+      cover: undefined,
+      coverUrl: url,
+    },
   });
 }
 
 export async function updateOfficialNotification(params: any) {
+  const url = params.cover ? await uploadFile(params.cover[0]) : undefined;
   return await request('/admin/user/official-notification/update', {
-    data: params,
+    data: {
+      ...params,
+      cover: undefined,
+      coverUrl: url,
+    },
   });
 }
 
