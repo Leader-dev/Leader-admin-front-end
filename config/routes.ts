@@ -31,6 +31,7 @@ export default [
     path: '/official-notification',
     component: './OfficialNotificationList',
   },
+  { name: '用户协定', icon: 'crown', path: '/agreements', component: './Agreements' },
   { path: '/', redirect: '/welcome' },
   { component: './404' },
 ];
